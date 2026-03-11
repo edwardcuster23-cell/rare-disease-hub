@@ -51,26 +51,26 @@ export default async function HomePage() {
             <line x1="85%" y1="30%" x2="92%" y2="18%"/>
           </g>
           <g fill="#e8a030">
-            <circle cx="8%" cy="15%" r="1.5"/>
-            <circle cx="18%" cy="28%" r="2"/>
-            <circle cx="32%" cy="22%" r="1.5"/>
-            <circle cx="45%" cy="35%" r="2.5"/>
-            <circle cx="58%" cy="25%" r="1.5"/>
-            <circle cx="72%" cy="38%" r="2"/>
-            <circle cx="85%" cy="30%" r="1.5"/>
-            <circle cx="25%" cy="45%" r="1.2"/>
-            <circle cx="38%" cy="52%" r="1.5"/>
-            <circle cx="65%" cy="45%" r="2"/>
-            <circle cx="78%" cy="58%" r="1.2"/>
-            <circle cx="38%" cy="10%" r="1"/>
-            <circle cx="92%" cy="18%" r="1"/>
-            <circle cx="12%" cy="55%" r="0.8"/>
-            <circle cx="52%" cy="12%" r="0.8"/>
-            <circle cx="88%" cy="65%" r="0.8"/>
-            <circle cx="5%" cy="38%" r="0.6"/>
-            <circle cx="70%" cy="12%" r="0.6"/>
-            <circle cx="48%" cy="68%" r="0.6"/>
-            <circle cx="95%" cy="48%" r="0.6"/>
+            <circle cx="8%" cy="15%" r="3"/>
+            <circle cx="18%" cy="28%" r="4"/>
+            <circle cx="32%" cy="22%" r="3"/>
+            <circle cx="45%" cy="35%" r="5"/>
+            <circle cx="58%" cy="25%" r="3"/>
+            <circle cx="72%" cy="38%" r="4"/>
+            <circle cx="85%" cy="30%" r="3"/>
+            <circle cx="25%" cy="45%" r="2.4"/>
+            <circle cx="38%" cy="52%" r="3"/>
+            <circle cx="65%" cy="45%" r="4"/>
+            <circle cx="78%" cy="58%" r="2.4"/>
+            <circle cx="38%" cy="10%" r="2"/>
+            <circle cx="92%" cy="18%" r="2"/>
+            <circle cx="12%" cy="55%" r="1.6"/>
+            <circle cx="52%" cy="12%" r="1.6"/>
+            <circle cx="88%" cy="65%" r="1.6"/>
+            <circle cx="5%" cy="38%" r="1.2"/>
+            <circle cx="70%" cy="12%" r="1.2"/>
+            <circle cx="48%" cy="68%" r="1.2"/>
+            <circle cx="95%" cy="48%" r="1.2"/>
           </g>
         </svg>
 
