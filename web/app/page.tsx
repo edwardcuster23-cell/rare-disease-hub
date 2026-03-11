@@ -151,18 +151,7 @@ export default async function HomePage() {
               <div style={{
                 background:'white', border:'1px solid #e0dbd2',
                 borderRadius:'6px', padding:'1.5rem',
-                transition:'border-color 0.2s, box-shadow 0.2s',
                 cursor:'pointer', height:'100%'
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget
-                el.style.borderColor = '#1e3459'
-                el.style.boxShadow = '0 2px 12px rgba(13,27,46,0.08)'
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget
-                el.style.borderColor = '#e0dbd2'
-                el.style.boxShadow = 'none'
               }}>
                 <div style={{
                   display:'inline-block', background:'rgba(232,160,48,0.1)',
