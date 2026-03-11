@@ -180,7 +180,7 @@ export default async function HomePage() {
             Disease Library
           </h2>
           <span style={{fontSize:'0.82rem', color:'#7a7a7a'}}>
-            {diseases?.length || 0} diseases · updated daily
+            {diseases?.length || 0} diseases
           </span>
         </div>
         <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:'1rem'}}>
