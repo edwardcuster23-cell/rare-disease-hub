@@ -102,20 +102,32 @@ def main():
     diseases = get_diseases()
     print(f"Found {len(diseases)} disease(s) in database")
 
+    current_year = 2026
+    years = list(range(2015, current_year + 1))
+
     for disease in diseases:
         print(f"\nProcessing: {disease['name']}")
         search_terms = disease["search_terms"]
-        query = " OR ".join([f'"{term}"' for term in search_terms])
-        query += " AND 2015:2099[dp]"
-        print(f"  Query: {query}")
+        base_query = " OR ".join([f'"{term}"' for term in search_terms])
 
-        pubmed_ids = search_pubmed(query, max_results=200)
-        print(f"  Found {len(pubmed_ids)} papers on PubMed")
+        total_saved = 0
+        total_skipped = 0
 
-        papers = fetch_paper_details(pubmed_ids)
-        saved, skipped = save_papers(disease["id"], papers)
-        print(f"  Saved: {saved} | Skipped: {skipped}")
+        for year in years:
+            query = f"({base_query}) AND {year}[dp]"
+            pubmed_ids = search_pubmed(query, max_results=50)
+            if not pubmed_ids:
+                continue
 
+            papers = fetch_paper_details(pubmed_ids)
+            saved, skipped = save_papers(disease["id"], papers)
+            total_saved += saved
+            total_skipped += skipped
+            print(f"  {year}: {len(pubmed_ids)} found, {saved} saved")
+
+            time.sleep(1)
+
+        print(f"  Total: {total_saved} saved | {total_skipped} skipped")
         time.sleep(2)
 
     print("\nDone.")

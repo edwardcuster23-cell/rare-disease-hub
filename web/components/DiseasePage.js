@@ -114,13 +114,7 @@ function OrgCard({ org }) {
           )}
         </div>
 
-        {/* Score badge */}
-        {org.funding_score && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <ScoreBadge score={org.funding_score} />
-            <span style={{ fontSize: '0.6rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Score</span>
-          </div>
-        )}
+        {/* Score badge (hidden for now) */}
       </div>
 
       {/* Expand toggle */}
@@ -454,7 +448,6 @@ export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
               </div>
             ) : (
               <>
-                <ScoreLegend />
                 {orgs.map(org => <OrgCard key={org.id} org={org} />)}
               </>
             )}
