@@ -9,7 +9,6 @@ const supabase = createClient(
 export default async function Page({ params }) {
   const { slug } = await params
 
-  // Fetch disease
   const { data: disease } = await supabase
     .from('diseases')
     .select('*')
@@ -20,7 +19,6 @@ export default async function Page({ params }) {
     return <div>Disease not found.</div>
   }
 
-  // Fetch papers
   const { data: papers } = await supabase
     .from('papers')
     .select('*')
@@ -28,7 +26,6 @@ export default async function Page({ params }) {
     .order('published_date', { ascending: false })
     .limit(10)
 
-  // Fetch trials
   const { data: trials } = await supabase
     .from('trials')
     .select('*')
@@ -36,11 +33,18 @@ export default async function Page({ params }) {
     .order('created_at', { ascending: false })
     .limit(10)
 
+  const { data: orgs } = await supabase
+    .from('organizations')
+    .select('*')
+    .eq('disease_id', disease.id)
+    .order('total_revenue', { ascending: false })
+
   return (
     <DiseasePage
       disease={disease}
       papers={papers || []}
       trials={trials || []}
+      orgs={orgs || []}
     />
   )
 }
