@@ -50,7 +50,13 @@ export default async function HomePage() {
             <line x1="32%" y1="22%" x2="38%" y2="10%"/>
             <line x1="85%" y1="30%" x2="92%" y2="18%"/>
           </g>
-          <g fill="#e8a030">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g fill="#e8a030" filter="url(#glow)">
             <circle cx="8%" cy="15%" r="3"/>
             <circle cx="18%" cy="28%" r="4"/>
             <circle cx="32%" cy="22%" r="3"/>
