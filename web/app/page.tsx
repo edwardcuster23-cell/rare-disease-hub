@@ -75,16 +75,6 @@ export default async function HomePage() {
         </svg>
 
         <div style={{maxWidth:'760px', margin:'0 auto', textAlign:'center', position:'relative', zIndex:1}}>
-          <div style={{
-            display:'inline-flex', alignItems:'center', gap:'0.5rem',
-            background:'rgba(232,160,48,0.1)', border:'1px solid rgba(232,160,48,0.2)',
-            borderRadius:'2px', padding:'0.3rem 0.75rem',
-            fontSize:'0.72rem', fontWeight:'500', letterSpacing:'0.08em',
-            textTransform:'uppercase', color:'#f5c060', marginBottom:'1.5rem'
-          }}>
-            <span style={{width:'6px', height:'6px', borderRadius:'50%', background:'#e8a030', display:'inline-block'}}/>
-            Free · Updated Daily · No Sign-up Required
-          </div>
           <h1 style={{
             fontSize:'clamp(2.2rem, 5vw, 3.8rem)',
             color:'white', lineHeight:'1.1',
