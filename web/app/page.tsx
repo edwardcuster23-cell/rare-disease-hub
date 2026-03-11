@@ -33,7 +33,7 @@ export default async function HomePage() {
         <div style={{position:'absolute', top:'-100px', right:'-150px', width:'600px', height:'600px', borderRadius:'50%', background:'radial-gradient(circle, rgba(232,160,48,0.06) 0%, transparent 70%)', pointerEvents:'none'}}/>
         
         {/* constellation SVG */}
-        <svg style={{position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', opacity:0.45}} xmlns="http://www.w3.org/2000/svg">
+        <svg style={{position:'absolute', top:'-15%', left:0, right:0, bottom:0, width:'100%', height:'115%', pointerEvents:'none', opacity:0.45}} xmlns="http://www.w3.org/2000/svg">
           <g stroke="white" strokeWidth="1.5" fill="none">
             <line x1="8%" y1="15%" x2="18%" y2="28%"/>
             <line x1="18%" y1="28%" x2="32%" y2="22%"/>
@@ -91,7 +91,7 @@ export default async function HomePage() {
           </h1>
           <p style={{
             fontSize:'1.1rem', color:'rgba(255,255,255,0.5)',
-            maxWidth:'540px', margin:'0 auto 2.5rem',
+            maxWidth:'540px', margin:'2rem auto 2.5rem',
             lineHeight:'1.75', fontWeight:'300'
           }}>
             Research papers, clinical trials, organizations, and funding transparency — 
