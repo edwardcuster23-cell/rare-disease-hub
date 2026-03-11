@@ -272,7 +272,7 @@ export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <div style={{ fontSize: '0.72rem', color: '#f5c060', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#e8a030', display: 'inline-block' }}></span>
-            Rare Disease Hub
+            {disease.category || 'Rare Disease'}
           </div>
           <h1 style={{ fontSize: '3rem', color: 'white', marginBottom: '0.75rem', lineHeight: '1.1' }}>{disease.name}</h1>
           <p style={{ color: 'rgba(255,255,255,0.5)', maxWidth: '560px', lineHeight: '1.7', fontWeight: '300', marginBottom: '2rem' }}>
