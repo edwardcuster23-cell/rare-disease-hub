@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '../../../lib/supabase'
 import DiseasePage from '../../../components/DiseasePage'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_KEY
-)
 
 export default async function Page({ params }) {
   const { slug } = await params

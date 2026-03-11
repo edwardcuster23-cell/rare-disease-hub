@@ -9,6 +9,9 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
+
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── FETCH DISEASE SEARCH TERMS ───────────────────────
@@ -45,6 +48,7 @@ def search_pubmed(query, max_results=20):
         "retmode": "json"
     }
     response = requests.get(url, params=params)
+    response.raise_for_status()
     data = response.json()
     return data["esearchresult"]["idlist"]
 
@@ -59,6 +63,7 @@ def fetch_paper_details(pubmed_ids):
         "retmode": "json"
     }
     response = requests.get(url, params=params)
+    response.raise_for_status()
     data = response.json()
     papers = []
     for pid in pubmed_ids:

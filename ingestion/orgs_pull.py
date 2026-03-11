@@ -8,6 +8,10 @@ from supabase import create_client
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
+
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── FETCH ORGS FROM DB ───────────────────────────────
@@ -77,7 +81,7 @@ def compute_score(financials):
             return "C"
         else:
             return "D"
-    except:
+    except Exception:
         return None
 
 # ── SAVE TO SUPABASE ─────────────────────────────────
@@ -105,9 +109,9 @@ def main():
             score = compute_score(financials)
             success = save_org_financials(org["id"], financials, score)
             if success:
-                expenses = financials.get("total_expenses") or 1
+                expenses = financials.get("total_expenses") or 0
                 programs = financials.get("program_expenses") or 0
-                ratio = round((programs / expenses) * 100, 1)
+                ratio = round((programs / expenses) * 100, 1) if expenses else 0
                 revenue_m = round((financials.get("total_revenue") or 0) / 1_000_000, 1)
                 print(f"  ✓ Score: {score} | Est. programs: {ratio}% | Revenue: ${revenue_m}M | Year: {financials.get('fiscal_year')}")
         else:

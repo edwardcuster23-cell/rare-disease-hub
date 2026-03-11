@@ -9,6 +9,9 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
+
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── FETCH DISEASE SEARCH TERMS ───────────────────────
@@ -25,6 +28,7 @@ def search_trials(query, max_results=20):
         "format": "json"
     }
     response = requests.get(url, params=params)
+    response.raise_for_status()
     data = response.json()
     return data.get("studies", [])
 
@@ -89,7 +93,11 @@ def main():
 
     for disease in diseases:
         print(f"\nProcessing: {disease['name']}")
-        query = disease["search_terms"][0]
+        search_terms = disease.get("search_terms") or []
+        if not search_terms:
+            print(f"  No search terms configured, skipping")
+            continue
+        query = search_terms[0]
         print(f"  Query: {query}")
 
         studies = search_trials(query, max_results=20)
