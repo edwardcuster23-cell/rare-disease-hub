@@ -34,7 +34,7 @@ export default async function HomePage() {
         
         {/* constellation SVG */}
         <svg style={{position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', opacity:0.45}} xmlns="http://www.w3.org/2000/svg">
-          <g stroke="#e8a030" strokeWidth="1.5" fill="none">
+          <g stroke="white" strokeWidth="1.5" fill="none">
             <line x1="8%" y1="15%" x2="18%" y2="28%"/>
             <line x1="18%" y1="28%" x2="32%" y2="22%"/>
             <line x1="32%" y1="22%" x2="45%" y2="35%"/>
@@ -56,7 +56,7 @@ export default async function HomePage() {
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
-          <g fill="#e8a030" filter="url(#glow)">
+          <g fill="white" filter="url(#glow)">
             <circle cx="8%" cy="15%" r="3"/>
             <circle cx="18%" cy="28%" r="4"/>
             <circle cx="32%" cy="22%" r="3"/>
