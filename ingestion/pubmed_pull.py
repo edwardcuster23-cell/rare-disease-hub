@@ -16,6 +16,24 @@ def get_diseases():
     response = supabase.table("diseases").select("id, name, search_terms").execute()
     return response.data
 
+# ── PARSE DATE ───────────────────────────────────────
+def parse_date(date_str):
+    if not date_str:
+        return None
+    parts = date_str.strip().split()
+    if len(parts) == 0:
+        return None
+    year = parts[0]
+    if not year.isdigit() or len(year) != 4:
+        return None
+    months = {
+        'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',
+        'Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'
+    }
+    month = months.get(parts[1][:3], '01') if len(parts) >= 2 else '01'
+    day = parts[2].zfill(2) if len(parts) >= 3 and parts[2].isdigit() else '01'
+    return f"{year}-{month}-{day}"
+
 # ── SEARCH PUBMED ────────────────────────────────────
 def search_pubmed(query, max_results=20):
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
@@ -50,7 +68,7 @@ def fetch_paper_details(pubmed_ids):
                 "pubmed_id": pid,
                 "title": item.get("title", ""),
                 "journal": item.get("fulljournalname", ""),
-                "published_date": item.get("pubdate", "")[:10] if item.get("pubdate") else None,
+                "published_date": parse_date(item.get("pubdate", "")),
                 "authors": [a["name"] for a in item.get("authors", [])],
                 "url": f"https://pubmed.ncbi.nlm.nih.gov/{pid}/"
             })

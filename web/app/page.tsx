@@ -7,26 +7,74 @@ export default async function HomePage() {
     .select('id, name, slug, description')
     .order('name')
 
+  const { count: papersCount } = await supabase
+    .from('papers')
+    .select('*', { count: 'exact', head: true })
+
+  const { count: trialsCount } = await supabase
+    .from('trials')
+    .select('*', { count: 'exact', head: true })
+
   return (
     <div style={{fontFamily:'system-ui, sans-serif', background:'#f7f3ed', minHeight:'100vh'}}>
 
       {/* NAV */}
       <nav style={{background:'#0d1b2e', padding:'0 2rem', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100}}>
         <div style={{color:'#e8a030', fontWeight:'bold', fontSize:'1rem'}}>
-          The Constellation Project <span style={{color:'rgba(255,255,255,0.4)', fontWeight:'300', fontSize:'0.8rem', marginLeft:'0.5rem'}}>Disease Intelligence</span>
+          Constellation Health <span style={{color:'rgba(255,255,255,0.4)', fontWeight:'300', fontSize:'0.8rem', marginLeft:'0.5rem'}}>Disease Intelligence</span>
         </div>
         <div style={{color:'rgba(255,255,255,0.35)', fontSize:'0.75rem'}}>Data refreshed daily</div>
       </nav>
 
       {/* HERO */}
       <div style={{background:'#0d1b2e', padding:'5rem 2rem 4rem', position:'relative', overflow:'hidden'}}>
-        <div style={{
-          position:'absolute', top:'-100px', right:'-150px',
-          width:'600px', height:'600px', borderRadius:'50%',
-          background:'radial-gradient(circle, rgba(232,160,48,0.06) 0%, transparent 70%)',
-          pointerEvents:'none'
-        }}/>
-        <div style={{maxWidth:'760px', margin:'0 auto', textAlign:'center'}}>
+        
+        {/* background glow */}
+        <div style={{position:'absolute', top:'-100px', right:'-150px', width:'600px', height:'600px', borderRadius:'50%', background:'radial-gradient(circle, rgba(232,160,48,0.06) 0%, transparent 70%)', pointerEvents:'none'}}/>
+        
+        {/* constellation SVG */}
+        <svg style={{position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', opacity:0.18}} xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#e8a030" strokeWidth="0.5" fill="none">
+            <line x1="8%" y1="15%" x2="18%" y2="28%"/>
+            <line x1="18%" y1="28%" x2="32%" y2="22%"/>
+            <line x1="32%" y1="22%" x2="45%" y2="35%"/>
+            <line x1="45%" y1="35%" x2="58%" y2="25%"/>
+            <line x1="58%" y1="25%" x2="72%" y2="38%"/>
+            <line x1="72%" y1="38%" x2="85%" y2="30%"/>
+            <line x1="18%" y1="28%" x2="25%" y2="45%"/>
+            <line x1="25%" y1="45%" x2="38%" y2="52%"/>
+            <line x1="38%" y1="52%" x2="45%" y2="35%"/>
+            <line x1="58%" y1="25%" x2="65%" y2="45%"/>
+            <line x1="65%" y1="45%" x2="72%" y2="38%"/>
+            <line x1="65%" y1="45%" x2="78%" y2="58%"/>
+            <line x1="32%" y1="22%" x2="38%" y2="10%"/>
+            <line x1="85%" y1="30%" x2="92%" y2="18%"/>
+          </g>
+          <g fill="#e8a030">
+            <circle cx="8%" cy="15%" r="1.5"/>
+            <circle cx="18%" cy="28%" r="2"/>
+            <circle cx="32%" cy="22%" r="1.5"/>
+            <circle cx="45%" cy="35%" r="2.5"/>
+            <circle cx="58%" cy="25%" r="1.5"/>
+            <circle cx="72%" cy="38%" r="2"/>
+            <circle cx="85%" cy="30%" r="1.5"/>
+            <circle cx="25%" cy="45%" r="1.2"/>
+            <circle cx="38%" cy="52%" r="1.5"/>
+            <circle cx="65%" cy="45%" r="2"/>
+            <circle cx="78%" cy="58%" r="1.2"/>
+            <circle cx="38%" cy="10%" r="1"/>
+            <circle cx="92%" cy="18%" r="1"/>
+            <circle cx="12%" cy="55%" r="0.8"/>
+            <circle cx="52%" cy="12%" r="0.8"/>
+            <circle cx="88%" cy="65%" r="0.8"/>
+            <circle cx="5%" cy="38%" r="0.6"/>
+            <circle cx="70%" cy="12%" r="0.6"/>
+            <circle cx="48%" cy="68%" r="0.6"/>
+            <circle cx="95%" cy="48%" r="0.6"/>
+          </g>
+        </svg>
+
+        <div style={{maxWidth:'760px', margin:'0 auto', textAlign:'center', position:'relative', zIndex:1}}>
           <div style={{
             display:'inline-flex', alignItems:'center', gap:'0.5rem',
             background:'rgba(232,160,48,0.1)', border:'1px solid rgba(232,160,48,0.2)',
@@ -79,8 +127,8 @@ export default async function HomePage() {
         <div style={{maxWidth:'960px', margin:'0 auto', padding:'0 2rem', display:'flex', justifyContent:'center', gap:'0'}}>
           {[
             { number: `${diseases?.length || 0}`, label: 'Diseases Tracked' },
-            { number: '100+', label: 'Papers Indexed' },
-            { number: '40+', label: 'Active Trials' },
+            { number: `${papersCount || 0}`, label: 'Papers Indexed' },
+            { number: `${trialsCount || 0}`, label: 'Trials Indexed' },
             { number: '$0', label: 'Cost to Access' },
           ].map((stat, i) => (
             <div key={i} style={{
@@ -104,7 +152,7 @@ export default async function HomePage() {
           }}>
             Built for families, not researchers
           </h2>
-          <p style={{textAlign:'center', color:'#7a7a7a', fontSize:'0.95rem', marginBottom:'3rem', maxWidth:'500px', margin:'0 auto 3rem'}}>
+          <p style={{textAlign:'center', color:'#7a7a7a', fontSize:'0.95rem', maxWidth:'500px', margin:'0 auto 3rem'}}>
             Information about rare diseases is scattered across dozens of sources. We pull it together daily.
           </p>
           <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'2rem'}}>
@@ -117,7 +165,7 @@ export default async function HomePage() {
               {
                 icon: '🔬',
                 title: 'Clinical Trials',
-                desc: 'Active and recruiting trials from ClinicalTrials.gov, filtered by disease so you can find what\'s relevant without searching.'
+                desc: "Active and recruiting trials from ClinicalTrials.gov, filtered by disease so you can find what's relevant without searching."
               },
               {
                 icon: '💡',
@@ -178,7 +226,7 @@ export default async function HomePage() {
 
       {/* FOOTER */}
       <footer style={{background:'#0d1b2e', color:'rgba(255,255,255,0.35)', textAlign:'center', padding:'2rem', fontSize:'0.78rem', marginTop:'2rem'}}>
-        <strong style={{color:'rgba(255,255,255,0.65)'}}>The Constellation Project</strong> · Data refreshed daily from PubMed, ClinicalTrials.gov, and curated sources.<br/>
+        <strong style={{color:'rgba(255,255,255,0.65)'}}>Constellation Health</strong> · Data refreshed daily from PubMed, ClinicalTrials.gov, and curated sources.<br/>
         <span style={{marginTop:'0.3rem', display:'block'}}>For informational purposes only. Always consult your healthcare provider.</span>
       </footer>
 
