@@ -33,7 +33,7 @@ export default async function HomePage() {
         <div style={{position:'absolute', top:'-100px', right:'-150px', width:'600px', height:'600px', borderRadius:'50%', background:'radial-gradient(circle, rgba(232,160,48,0.06) 0%, transparent 70%)', pointerEvents:'none'}}/>
         
         {/* constellation SVG */}
-        <svg style={{position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', opacity:0.18}} xmlns="http://www.w3.org/2000/svg">
+        <svg style={{position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', opacity:0.45}} xmlns="http://www.w3.org/2000/svg">
           <g stroke="#e8a030" strokeWidth="0.5" fill="none">
             <line x1="8%" y1="15%" x2="18%" y2="28%"/>
             <line x1="18%" y1="28%" x2="32%" y2="22%"/>
