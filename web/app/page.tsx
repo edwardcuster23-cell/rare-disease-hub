@@ -13,7 +13,7 @@ export default async function HomePage() {
       {/* NAV */}
       <nav style={{background:'#0d1b2e', padding:'0 2rem', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100}}>
         <div style={{color:'#e8a030', fontWeight:'bold', fontSize:'1rem'}}>
-          RareHub <span style={{color:'rgba(255,255,255,0.4)', fontWeight:'300', fontSize:'0.8rem', marginLeft:'0.5rem'}}>Disease Intelligence</span>
+          The Constellation Project <span style={{color:'rgba(255,255,255,0.4)', fontWeight:'300', fontSize:'0.8rem', marginLeft:'0.5rem'}}>Disease Intelligence</span>
         </div>
         <div style={{color:'rgba(255,255,255,0.35)', fontSize:'0.75rem'}}>Data refreshed daily</div>
       </nav>
@@ -178,7 +178,7 @@ export default async function HomePage() {
 
       {/* FOOTER */}
       <footer style={{background:'#0d1b2e', color:'rgba(255,255,255,0.35)', textAlign:'center', padding:'2rem', fontSize:'0.78rem', marginTop:'2rem'}}>
-        <strong style={{color:'rgba(255,255,255,0.65)'}}>RareHub</strong> · Data refreshed daily from PubMed, ClinicalTrials.gov, and curated sources.<br/>
+        <strong style={{color:'rgba(255,255,255,0.65)'}}>The Constellation Project</strong> · Data refreshed daily from PubMed, ClinicalTrials.gov, and curated sources.<br/>
         <span style={{marginTop:'0.3rem', display:'block'}}>For informational purposes only. Always consult your healthcare provider.</span>
       </footer>
 

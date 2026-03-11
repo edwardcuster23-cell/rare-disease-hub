@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RareHub — Rare Disease Intelligence",
+  title: "The Constellation Project — Rare Disease Intelligence",
   description: "Research, clinical trials, and funding transparency for rare disease families.",
 };
 

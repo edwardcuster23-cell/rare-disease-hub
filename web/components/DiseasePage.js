@@ -13,7 +13,7 @@ export default function DiseasePage({ disease, papers, trials }) {
       {/* NAV */}
       <nav style={{background:'#0d1b2e', padding:'0 2rem', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
         <div style={{color:'#e8a030', fontWeight:'bold', fontSize:'1rem'}}>
-          RareHub <span style={{color:'rgba(255,255,255,0.4)', fontWeight:'300', fontSize:'0.8rem', marginLeft:'0.5rem'}}>Disease Intelligence</span>
+          The Constellation Project <span style={{color:'rgba(255,255,255,0.4)', fontWeight:'300', fontSize:'0.8rem', marginLeft:'0.5rem'}}>Disease Intelligence</span>
         </div>
         <div style={{color:'rgba(255,255,255,0.35)', fontSize:'0.75rem'}}>Data refreshed daily</div>
       </nav>
