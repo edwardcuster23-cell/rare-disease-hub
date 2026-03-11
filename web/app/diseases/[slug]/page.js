@@ -19,7 +19,7 @@ export default async function Page({ params }) {
     .select('*')
     .eq('disease_id', disease.id)
     .order('published_date', { ascending: false })
-    .limit(10)
+    .limit(200)
 
   const { data: trials } = await supabase
     .from('trials')

@@ -321,13 +321,48 @@ export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
         {/* OVERVIEW */}
         {activeTab === 'overview' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '2rem' }}>
-            <div style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.75rem' }}>
-              <p style={{ lineHeight: '1.85', color: '#3a3a3a', marginBottom: '1rem' }}>{disease.description}</p>
-              <p style={{ lineHeight: '1.85', color: '#3a3a3a' }}>
-                This page aggregates the latest research papers from PubMed and active clinical trials
-                from ClinicalTrials.gov, refreshed daily. Use the tabs above to explore current research
-                and find trials that may be relevant.
-              </p>
+            <div>
+              <div style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.75rem', marginBottom: '1.5rem' }}>
+                <p style={{ lineHeight: '1.85', color: '#3a3a3a', marginBottom: '1rem' }}>{disease.description}</p>
+                <p style={{ lineHeight: '1.85', color: '#3a3a3a' }}>
+                  This page aggregates the latest research papers from PubMed and active clinical trials
+                  from ClinicalTrials.gov, refreshed daily. Use the tabs above to explore current research
+                  and find trials that may be relevant.
+                </p>
+              </div>
+
+              {/* Research Velocity Chart */}
+              {(() => {
+                const counts = {}
+                papers.forEach(p => {
+                  if (!p.published_date) return
+                  const year = p.published_date.slice(0, 4)
+                  if (year >= '2015') counts[year] = (counts[year] || 0) + 1
+                })
+                const years = Object.keys(counts).sort()
+                if (years.length === 0) return null
+                const max = Math.max(...Object.values(counts))
+                return (
+                  <div style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.75rem' }}>
+                    <h3 style={{ margin: '0 0 0.25rem', fontSize: '0.95rem', fontWeight: 700, color: '#0d1b2e' }}>Research Velocity</h3>
+                    <p style={{ margin: '0 0 1.25rem', fontSize: '0.78rem', color: '#9ca3af' }}>Papers published per year</p>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 140 }}>
+                      {years.map(year => (
+                        <div key={year} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#0d1b2e', marginBottom: 4 }}>{counts[year]}</span>
+                          <div style={{
+                            width: '100%', maxWidth: 48, borderRadius: '3px 3px 0 0',
+                            background: '#e8a030',
+                            height: `${(counts[year] / max) * 100}%`,
+                            minHeight: 4,
+                          }} />
+                          <span style={{ fontSize: '0.68rem', color: '#7a7a7a', marginTop: 6 }}>{year}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
             <div style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', overflow: 'hidden' }}>
               <div style={{ background: '#0d1b2e', padding: '0.75rem 1.25rem' }}>

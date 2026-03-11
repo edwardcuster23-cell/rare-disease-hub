@@ -106,16 +106,17 @@ def main():
         print(f"\nProcessing: {disease['name']}")
         search_terms = disease["search_terms"]
         query = " OR ".join([f'"{term}"' for term in search_terms])
+        query += " AND 2015:2099[dp]"
         print(f"  Query: {query}")
 
-        pubmed_ids = search_pubmed(query, max_results=20)
+        pubmed_ids = search_pubmed(query, max_results=200)
         print(f"  Found {len(pubmed_ids)} papers on PubMed")
 
         papers = fetch_paper_details(pubmed_ids)
         saved, skipped = save_papers(disease["id"], papers)
         print(f"  Saved: {saved} | Skipped: {skipped}")
 
-        time.sleep(1)
+        time.sleep(2)
 
     print("\nDone.")
 
