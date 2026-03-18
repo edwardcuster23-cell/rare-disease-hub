@@ -60,9 +60,9 @@ def fetch_paper_details(pubmed_ids):
     if not pubmed_ids:
         return []
     papers = []
-    # Fetch in batches of 500
-    for i in range(0, len(pubmed_ids), 500):
-        batch = pubmed_ids[i:i+500]
+    # Fetch in batches of 200
+    for i in range(0, len(pubmed_ids), 200):
+        batch = pubmed_ids[i:i+200]
         url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
         params = {
             "db": "pubmed",
