@@ -31,28 +31,37 @@ export default function ReviewClient({ candidates: initialCandidates }) {
 
   async function handleApprove(candidate) {
     setLoading(prev => ({ ...prev, [candidate.id]: true }))
-    try {
-      // Insert into organizations table
-      await supabase.from('organizations').insert({
-        disease_id: parseInt(candidate.disease_id),
-        name: candidate.name,
-        ein: candidate.ein,
-        propublica_url: candidate.propublica_url,
-      })
 
-      // Mark as approved
-      await supabase
-        .from('org_candidates')
-        .update({ approved: true })
-        .eq('id', candidate.id)
-        .select()
+    // Insert into organizations table
+    const { data: insertData, error: insertError } = await supabase.from('organizations').insert({
+      disease_id: parseInt(candidate.disease_id),
+      name: candidate.name,
+      ein: candidate.ein,
+      propublica_url: candidate.propublica_url,
+    }).select()
 
-      setCandidates(prev =>
-        prev.map(c => c.id === candidate.id ? { ...c, approved: true } : c)
-      )
-    } catch (e) {
-      console.error('Approve error:', e)
+    if (insertError) {
+      console.error('Organizations insert failed:', insertError)
+      console.error('Payload was:', { disease_id: parseInt(candidate.disease_id), name: candidate.name, ein: candidate.ein })
+      setLoading(prev => ({ ...prev, [candidate.id]: false }))
+      return
     }
+
+    console.log('Inserted org:', insertData)
+
+    // Mark as approved
+    const { error: updateError } = await supabase
+      .from('org_candidates')
+      .update({ approved: true })
+      .eq('id', candidate.id)
+
+    if (updateError) {
+      console.error('Candidate update failed:', updateError)
+    }
+
+    setCandidates(prev =>
+      prev.map(c => c.id === candidate.id ? { ...c, approved: true } : c)
+    )
     setLoading(prev => ({ ...prev, [candidate.id]: false }))
   }
 
