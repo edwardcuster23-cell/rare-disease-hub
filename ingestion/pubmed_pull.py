@@ -47,7 +47,7 @@ def search_pubmed(query):
         "sort": "date",
         "retmode": "json",
         "datetype": "pdat",
-        "mindate": "2020",
+        "mindate": "2023",
         "maxdate": "2026"
     }
     response = requests.get(url, params=params)
@@ -116,10 +116,12 @@ def main():
             print(f"[{i}/{total}] {disease['name']} — skipped (no pubmed_query)")
             continue
 
+        start = time.time()
         pubmed_ids = search_pubmed(query)
         papers = fetch_paper_details(pubmed_ids)
         saved, skipped = save_papers(disease["id"], papers)
-        print(f"[{i}/{total}] {disease['name']} — found {len(pubmed_ids)}, inserted {saved} new")
+        elapsed = time.time() - start
+        print(f"[{i}/{total}] {disease['name']} — found {len(pubmed_ids)}, inserted {saved} new ({elapsed:.1f}s)")
 
         time.sleep(1)
 
