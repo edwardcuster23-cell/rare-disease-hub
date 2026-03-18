@@ -60,9 +60,9 @@ def fetch_paper_details(pubmed_ids):
     if not pubmed_ids:
         return []
     papers = []
-    # Fetch in batches of 200 (esummary limit)
-    for i in range(0, len(pubmed_ids), 200):
-        batch = pubmed_ids[i:i+200]
+    # Fetch in batches of 500
+    for i in range(0, len(pubmed_ids), 500):
+        batch = pubmed_ids[i:i+500]
         url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
         params = {
             "db": "pubmed",
@@ -83,7 +83,7 @@ def fetch_paper_details(pubmed_ids):
                     "authors": [a["name"] for a in item.get("authors", [])],
                     "url": f"https://pubmed.ncbi.nlm.nih.gov/{pid}/"
                 })
-        time.sleep(0.5)
+        time.sleep(0.1)
     return papers
 
 # ── SAVE TO SUPABASE ─────────────────────────────────
@@ -92,15 +92,17 @@ def save_papers(disease_id, papers):
     skipped = 0
     for paper in papers:
         paper["disease_id"] = disease_id
+    for i in range(0, len(papers), 100):
+        batch = papers[i:i+100]
         try:
             supabase.table("papers").upsert(
-                paper,
+                batch,
                 on_conflict="pubmed_id"
             ).execute()
-            saved += 1
+            saved += len(batch)
         except Exception as e:
-            print(f"  Skipped: {paper['title'][:60]}... ({e})")
-            skipped += 1
+            print(f"  Batch error: {e}")
+            skipped += len(batch)
     return saved, skipped
 
 # ── MAIN ─────────────────────────────────────────────
