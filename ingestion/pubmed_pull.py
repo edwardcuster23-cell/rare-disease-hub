@@ -14,9 +14,9 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ── FETCH DISEASE SEARCH TERMS ───────────────────────
+# ── FETCH DISEASES ──────────────────────────────────
 def get_diseases():
-    response = supabase.table("diseases").select("id, name, search_terms").execute()
+    response = supabase.table("diseases").select("id, name, pubmed_query").execute()
     return response.data
 
 # ── PARSE DATE ───────────────────────────────────────
@@ -38,14 +38,17 @@ def parse_date(date_str):
     return f"{year}-{month}-{day}"
 
 # ── SEARCH PUBMED ────────────────────────────────────
-def search_pubmed(query, max_results=20):
+def search_pubmed(query):
     url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
     params = {
         "db": "pubmed",
         "term": query,
-        "retmax": max_results,
+        "retmax": 10000,
         "sort": "date",
-        "retmode": "json"
+        "retmode": "json",
+        "datetype": "pdat",
+        "mindate": "2020",
+        "maxdate": "2026"
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -56,27 +59,31 @@ def search_pubmed(query, max_results=20):
 def fetch_paper_details(pubmed_ids):
     if not pubmed_ids:
         return []
-    url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
-    params = {
-        "db": "pubmed",
-        "id": ",".join(pubmed_ids),
-        "retmode": "json"
-    }
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    data = response.json()
     papers = []
-    for pid in pubmed_ids:
-        if pid in data["result"]:
-            item = data["result"][pid]
-            papers.append({
-                "pubmed_id": pid,
-                "title": item.get("title", ""),
-                "journal": item.get("fulljournalname", ""),
-                "published_date": parse_date(item.get("pubdate", "")),
-                "authors": [a["name"] for a in item.get("authors", [])],
-                "url": f"https://pubmed.ncbi.nlm.nih.gov/{pid}/"
-            })
+    # Fetch in batches of 200 (esummary limit)
+    for i in range(0, len(pubmed_ids), 200):
+        batch = pubmed_ids[i:i+200]
+        url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+        params = {
+            "db": "pubmed",
+            "id": ",".join(batch),
+            "retmode": "json"
+        }
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+        for pid in batch:
+            if pid in data["result"]:
+                item = data["result"][pid]
+                papers.append({
+                    "pubmed_id": pid,
+                    "title": item.get("title", ""),
+                    "journal": item.get("fulljournalname", ""),
+                    "published_date": parse_date(item.get("pubdate", "")),
+                    "authors": [a["name"] for a in item.get("authors", [])],
+                    "url": f"https://pubmed.ncbi.nlm.nih.gov/{pid}/"
+                })
+        time.sleep(0.5)
     return papers
 
 # ── SAVE TO SUPABASE ─────────────────────────────────
@@ -100,35 +107,21 @@ def save_papers(disease_id, papers):
 def main():
     print("Starting PubMed ingestion...")
     diseases = get_diseases()
-    print(f"Found {len(diseases)} disease(s) in database")
+    total = len(diseases)
+    print(f"Found {total} disease(s) in database\n")
 
-    current_year = 2026
-    years = list(range(2015, current_year + 1))
+    for i, disease in enumerate(diseases, 1):
+        query = disease.get("pubmed_query")
+        if not query:
+            print(f"[{i}/{total}] {disease['name']} — skipped (no pubmed_query)")
+            continue
 
-    for disease in diseases:
-        print(f"\nProcessing: {disease['name']}")
-        search_terms = disease["search_terms"]
-        base_query = " OR ".join([f'"{term}"' for term in search_terms])
+        pubmed_ids = search_pubmed(query)
+        papers = fetch_paper_details(pubmed_ids)
+        saved, skipped = save_papers(disease["id"], papers)
+        print(f"[{i}/{total}] {disease['name']} — found {len(pubmed_ids)}, inserted {saved} new")
 
-        total_saved = 0
-        total_skipped = 0
-
-        for year in years:
-            query = f"({base_query}) AND {year}[dp]"
-            pubmed_ids = search_pubmed(query, max_results=50)
-            if not pubmed_ids:
-                continue
-
-            papers = fetch_paper_details(pubmed_ids)
-            saved, skipped = save_papers(disease["id"], papers)
-            total_saved += saved
-            total_skipped += skipped
-            print(f"  {year}: {len(pubmed_ids)} found, {saved} saved")
-
-            time.sleep(1)
-
-        print(f"  Total: {total_saved} saved | {total_skipped} skipped")
-        time.sleep(2)
+        time.sleep(1)
 
     print("\nDone.")
 
