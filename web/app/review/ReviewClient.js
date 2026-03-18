@@ -23,7 +23,7 @@ export default function ReviewClient({ candidates: initialCandidates }) {
   // Group by disease
   const grouped = {}
   for (const c of candidates) {
-    const disease = c.diseases?.name || 'Unknown'
+    const disease = c.disease_name || 'Unknown'
     if (!grouped[disease]) grouped[disease] = []
     grouped[disease].push(c)
   }
@@ -33,12 +33,12 @@ export default function ReviewClient({ candidates: initialCandidates }) {
     setLoading(prev => ({ ...prev, [candidate.id]: true }))
     try {
       // Insert into organizations table
-      await supabase.table('organizations').upsert({
+      await supabase.from('organizations').upsert({
         disease_id: candidate.disease_id,
         name: candidate.name,
         ein: candidate.ein,
         propublica_url: candidate.propublica_url,
-      }, { onConflict: 'ein' }).execute()
+      }, { onConflict: 'ein' })
 
       // Mark as approved
       await supabase
