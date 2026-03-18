@@ -33,12 +33,12 @@ export default function ReviewClient({ candidates: initialCandidates }) {
     setLoading(prev => ({ ...prev, [candidate.id]: true }))
     try {
       // Insert into organizations table
-      await supabase.from('organizations').upsert({
-        disease_id: candidate.disease_id,
+      await supabase.from('organizations').insert({
+        disease_id: parseInt(candidate.disease_id),
         name: candidate.name,
         ein: candidate.ein,
         propublica_url: candidate.propublica_url,
-      }, { onConflict: 'ein' })
+      })
 
       // Mark as approved
       await supabase
