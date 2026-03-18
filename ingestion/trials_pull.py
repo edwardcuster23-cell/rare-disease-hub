@@ -16,7 +16,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── FETCH DISEASE SEARCH TERMS ───────────────────────
 def get_diseases():
-    response = supabase.table("diseases").select("id, name, search_terms").execute()
+    response = supabase.table("diseases").select("id, name, search_terms").eq("active", True).execute()
     return response.data
 
 # ── SEARCH CLINICALTRIALS ────────────────────────────

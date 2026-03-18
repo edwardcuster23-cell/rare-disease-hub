@@ -16,7 +16,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── FETCH DISEASES ──────────────────────────────────
 def get_diseases():
-    response = supabase.table("diseases").select("id, name, pubmed_query").execute()
+    response = supabase.table("diseases").select("id, name, pubmed_query").eq("active", True).execute()
     return response.data
 
 # ── PARSE DATE ───────────────────────────────────────

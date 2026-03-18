@@ -16,7 +16,9 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── FETCH ORGS FROM DB ───────────────────────────────
 def get_orgs():
-    response = supabase.table("organizations").select("*").not_.is_("ein", "null").execute()
+    active_diseases = supabase.table("diseases").select("id").eq("active", True).execute()
+    active_ids = [d["id"] for d in active_diseases.data]
+    response = supabase.table("organizations").select("*").not_.is_("ein", "null").in_("disease_id", active_ids).execute()
     return response.data
 
 # ── FETCH PROPUBLICA DATA ────────────────────────────
