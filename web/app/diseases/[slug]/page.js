@@ -39,7 +39,7 @@ export default async function Page({ params }) {
   const { data: orgs } = await supabase
     .from('organizations')
     .select('*')
-    .eq('disease_id', disease.id)
+    .eq('disease_id', parseInt(disease.id))
     .order('total_revenue', { ascending: false })
 
   return (
