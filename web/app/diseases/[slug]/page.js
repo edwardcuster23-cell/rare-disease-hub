@@ -19,14 +19,22 @@ export default async function Page({ params }) {
     .select('*')
     .eq('disease_id', disease.id)
     .order('published_date', { ascending: false })
-    .limit(200)
+
+  const { count: totalPapers } = await supabase
+    .from('papers')
+    .select('*', { count: 'exact', head: true })
+    .eq('disease_id', disease.id)
 
   const { data: trials } = await supabase
     .from('trials')
     .select('*')
     .eq('disease_id', disease.id)
     .order('created_at', { ascending: false })
-    .limit(10)
+
+  const { count: totalTrials } = await supabase
+    .from('trials')
+    .select('*', { count: 'exact', head: true })
+    .eq('disease_id', disease.id)
 
   const { data: orgs } = await supabase
     .from('organizations')
@@ -38,7 +46,9 @@ export default async function Page({ params }) {
     <DiseasePage
       disease={disease}
       papers={papers || []}
+      totalPapers={totalPapers || 0}
       trials={trials || []}
+      totalTrials={totalTrials || 0}
       orgs={orgs || []}
     />
   )

@@ -239,8 +239,16 @@ function ScoreLegend() {
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 
-export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
+export default function DiseasePage({ disease, papers, totalPapers, trials, totalTrials, orgs = [] }) {
   const [activeTab, setActiveTab] = useState('overview')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [currentTrialsPage, setCurrentTrialsPage] = useState(1)
+  const papersPerPage = 25
+  const trialsPerPage = 25
+  const totalPages = Math.ceil(papers.length / papersPerPage)
+  const totalTrialsPages = Math.ceil(trials.length / trialsPerPage)
+  const paginatedPapers = papers.slice((currentPage - 1) * papersPerPage, currentPage * papersPerPage)
+  const paginatedTrials = trials.slice((currentTrialsPage - 1) * trialsPerPage, currentTrialsPage * trialsPerPage)
 
   const tabs = ['overview', 'research', 'trials', 'organizations']
 
@@ -274,8 +282,8 @@ export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
           </p>
           <div style={{ display: 'flex', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
             {[
-              { number: papers.length, label: 'Recent Papers' },
-              { number: trials.length, label: 'Active Trials' },
+              { number: totalPapers, label: 'Recent Papers' },
+              { number: totalTrials, label: 'Active Trials' },
               { number: orgs.length || '—', label: 'Organizations' },
               { number: 'Daily', label: 'Data Refresh' },
             ].map((stat, i) => (
@@ -300,8 +308,8 @@ export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
               cursor: 'pointer', fontSize: '0.82rem', fontWeight: '500',
               textTransform: 'capitalize', letterSpacing: '0.03em',
             }}>
-              {tab === 'research'        ? `Research (${papers.length})`
-               : tab === 'trials'        ? `Clinical Trials (${trials.length})`
+              {tab === 'research'        ? `Research (${totalPapers})`
+               : tab === 'trials'        ? `Clinical Trials (${totalTrials})`
                : tab === 'organizations' ? `Organizations (${orgs.length})`
                : 'Overview'}
             </button>
@@ -389,53 +397,127 @@ export default function DiseasePage({ disease, papers, trials, orgs = [] }) {
         {/* RESEARCH */}
         {activeTab === 'research' && (
           <div>
-            {papers.map(paper => (
-              <div key={paper.id} style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.3rem 1.5rem', marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.72rem', color: '#7a7a7a', marginBottom: '0.45rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {paper.journal} {paper.published_date && `· ${paper.published_date}`}
-                </div>
-                <h3 style={{ fontSize: '0.95rem', color: '#0d1b2e', lineHeight: '1.45', margin: '0 0 0.65rem' }}>
-                  <a href={paper.url} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    {paper.title}
-                  </a>
-                </h3>
-                {paper.ai_summary && (
-                  <div style={{ background: '#fffbf0', border: '1px solid rgba(232,160,48,0.2)', borderRadius: '4px', padding: '0.75rem 0.9rem' }}>
-                    <div style={{ fontSize: '0.67rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#e8a030', marginBottom: '0.3rem' }}>✦ Plain-English Summary</div>
-                    <p style={{ fontSize: '0.865rem', lineHeight: '1.65', color: '#4a3a10', margin: 0 }}>{paper.ai_summary}</p>
+            <div id="papers-list">
+              {paginatedPapers.map(paper => (
+                <div key={paper.id} style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.3rem 1.5rem', marginBottom: '1rem' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#7a7a7a', marginBottom: '0.45rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {paper.journal} {paper.published_date && `· ${paper.published_date}`}
                   </div>
-                )}
+                  <h3 style={{ fontSize: '0.95rem', color: '#0d1b2e', lineHeight: '1.45', margin: '0 0 0.65rem' }}>
+                    <a href={paper.url} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {paper.title}
+                    </a>
+                  </h3>
+                  {paper.ai_summary && (
+                    <div style={{ background: '#fffbf0', border: '1px solid rgba(232,160,48,0.2)', borderRadius: '4px', padding: '0.75rem 0.9rem' }}>
+                      <div style={{ fontSize: '0.67rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#e8a030', marginBottom: '0.3rem' }}>✦ Plain-English Summary</div>
+                      <p style={{ fontSize: '0.865rem', lineHeight: '1.65', color: '#4a3a10', margin: 0 }}>{paper.ai_summary}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '1.5rem' }}>
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => { setCurrentPage(currentPage - 1); document.getElementById('papers-list')?.scrollIntoView({ behavior: 'smooth' }) }}
+                  style={{
+                    padding: '0.5rem 1.2rem', borderRadius: '4px', border: '1px solid #e0dbd2',
+                    background: currentPage === 1 ? '#f3f4f6' : '#0d1b2e',
+                    color: currentPage === 1 ? '#9ca3af' : 'white',
+                    cursor: currentPage === 1 ? 'default' : 'pointer',
+                    fontSize: '0.82rem', fontWeight: 500,
+                  }}
+                >
+                  Previous
+                </button>
+                <span style={{ fontSize: '0.82rem', color: '#6b7280', fontWeight: 500 }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => { setCurrentPage(currentPage + 1); document.getElementById('papers-list')?.scrollIntoView({ behavior: 'smooth' }) }}
+                  style={{
+                    padding: '0.5rem 1.2rem', borderRadius: '4px', border: '1px solid #e0dbd2',
+                    background: currentPage === totalPages ? '#f3f4f6' : '#0d1b2e',
+                    color: currentPage === totalPages ? '#9ca3af' : 'white',
+                    cursor: currentPage === totalPages ? 'default' : 'pointer',
+                    fontSize: '0.82rem', fontWeight: 500,
+                  }}
+                >
+                  Next
+                </button>
               </div>
-            ))}
+            )}
           </div>
         )}
 
         {/* TRIALS */}
         {activeTab === 'trials' && (
           <div>
-            {trials.map(trial => (
-              <div key={trial.id} style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.25rem 1.5rem', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.5rem' }}>
-                  <h3 style={{ fontSize: '0.93rem', color: '#0d1b2e', lineHeight: '1.4', margin: 0 }}>{trial.title}</h3>
-                  <span style={{
-                    fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase',
-                    padding: '0.25rem 0.6rem', borderRadius: '3px', whiteSpace: 'nowrap', flexShrink: 0,
-                    background: trial.status === 'RECRUITING' ? '#e6f4ef' : '#e8f0f8',
-                    color: trial.status === 'RECRUITING' ? '#2a7a5c' : '#1a4a7a',
-                  }}>
-                    {trial.status}
-                  </span>
+            <div id="trials-list">
+              {paginatedTrials.map(trial => (
+                <div key={trial.id} style={{ background: 'white', border: '1px solid #e0dbd2', borderRadius: '6px', padding: '1.25rem 1.5rem', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '0.93rem', color: '#0d1b2e', lineHeight: '1.4', margin: 0 }}>{trial.title}</h3>
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase',
+                      padding: '0.25rem 0.6rem', borderRadius: '3px', whiteSpace: 'nowrap', flexShrink: 0,
+                      background: trial.status === 'RECRUITING' ? '#e6f4ef' : '#e8f0f8',
+                      color: trial.status === 'RECRUITING' ? '#2a7a5c' : '#1a4a7a',
+                    }}>
+                      {trial.status}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem', color: '#7a7a7a', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                    {trial.phase && <span><strong style={{ color: '#3a3a3a' }}>Phase:</strong> {trial.phase}</span>}
+                    {trial.sponsor && <span><strong style={{ color: '#3a3a3a' }}>Sponsor:</strong> {trial.sponsor}</span>}
+                    {trial.age_range && <span><strong style={{ color: '#3a3a3a' }}>Ages:</strong> up to {trial.age_range}</span>}
+                  </div>
+                  <a href={trial.url} target="_blank" rel="noreferrer" style={{ fontSize: '0.78rem', color: '#1e3459', fontWeight: '500', textDecoration: 'none' }}>
+                    View on ClinicalTrials.gov →
+                  </a>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem', color: '#7a7a7a', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                  {trial.phase && <span><strong style={{ color: '#3a3a3a' }}>Phase:</strong> {trial.phase}</span>}
-                  {trial.sponsor && <span><strong style={{ color: '#3a3a3a' }}>Sponsor:</strong> {trial.sponsor}</span>}
-                  {trial.age_range && <span><strong style={{ color: '#3a3a3a' }}>Ages:</strong> up to {trial.age_range}</span>}
-                </div>
-                <a href={trial.url} target="_blank" rel="noreferrer" style={{ fontSize: '0.78rem', color: '#1e3459', fontWeight: '500', textDecoration: 'none' }}>
-                  View on ClinicalTrials.gov →
-                </a>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalTrialsPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', marginTop: '1.5rem' }}>
+                <button
+                  disabled={currentTrialsPage === 1}
+                  onClick={() => { setCurrentTrialsPage(currentTrialsPage - 1); document.getElementById('trials-list')?.scrollIntoView({ behavior: 'smooth' }) }}
+                  style={{
+                    padding: '0.5rem 1.2rem', borderRadius: '4px', border: '1px solid #e0dbd2',
+                    background: currentTrialsPage === 1 ? '#f3f4f6' : '#0d1b2e',
+                    color: currentTrialsPage === 1 ? '#9ca3af' : 'white',
+                    cursor: currentTrialsPage === 1 ? 'default' : 'pointer',
+                    fontSize: '0.82rem', fontWeight: 500,
+                  }}
+                >
+                  Previous
+                </button>
+                <span style={{ fontSize: '0.82rem', color: '#6b7280', fontWeight: 500 }}>
+                  Page {currentTrialsPage} of {totalTrialsPages}
+                </span>
+                <button
+                  disabled={currentTrialsPage === totalTrialsPages}
+                  onClick={() => { setCurrentTrialsPage(currentTrialsPage + 1); document.getElementById('trials-list')?.scrollIntoView({ behavior: 'smooth' }) }}
+                  style={{
+                    padding: '0.5rem 1.2rem', borderRadius: '4px', border: '1px solid #e0dbd2',
+                    background: currentTrialsPage === totalTrialsPages ? '#f3f4f6' : '#0d1b2e',
+                    color: currentTrialsPage === totalTrialsPages ? '#9ca3af' : 'white',
+                    cursor: currentTrialsPage === totalTrialsPages ? 'default' : 'pointer',
+                    fontSize: '0.82rem', fontWeight: 500,
+                  }}
+                >
+                  Next
+                </button>
               </div>
-            ))}
+            )}
           </div>
         )}
 
