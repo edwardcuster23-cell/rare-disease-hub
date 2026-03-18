@@ -20,11 +20,11 @@ def get_diseases():
     return response.data
 
 # ── SEARCH CLINICALTRIALS ────────────────────────────
-def search_trials(query, max_results=20):
+def search_trials(query):
     url = "https://clinicaltrials.gov/api/v2/studies"
     params = {
         "query.term": query,
-        "pageSize": max_results,
+        "pageSize": 1000,
         "format": "json"
     }
     response = requests.get(url, params=params)
@@ -100,7 +100,7 @@ def main():
         query = search_terms[0]
         print(f"  Query: {query}")
 
-        studies = search_trials(query, max_results=20)
+        studies = search_trials(query)
         print(f"  Found {len(studies)} trials on ClinicalTrials.gov")
 
         trials = [parse_trial(s) for s in studies]
