@@ -71,7 +71,7 @@ export default function ReviewClient({ candidates: initialCandidates }) {
       {/* NAV */}
       <nav style={{ background: '#0d1b2e', padding: '0 2rem', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <a href="/" style={{ color: '#e8a030', fontWeight: 'bold', fontSize: '1rem', textDecoration: 'none' }}>
-          Constellation Health <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: '300', fontSize: '0.8rem', marginLeft: '0.5rem' }}>Disease Intelligence</span>
+          The Constellation Project <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: '300', fontSize: '0.8rem', marginLeft: '0.5rem' }}>Disease Intelligence</span>
         </a>
         <a href="/" style={{
           fontSize: '0.78rem', color: 'rgba(255,255,255,0.6)', textDecoration: 'none',
