@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { supabase } from '../lib/supabase'
 import Link from 'next/link'
 
@@ -5,6 +7,7 @@ export default async function HomePage() {
   const { data: diseases } = await supabase
     .from('diseases')
     .select('id, name, slug, description')
+    .eq('active', true)
     .order('name')
 
   const { count: papersCount } = await supabase
