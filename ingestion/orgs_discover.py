@@ -14,20 +14,9 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ── SEARCH OVERRIDES ────────────────────────────────
-search_overrides = {
-    'pre-b-cell-all-pediatric': 'leukemia children',
-    'congenital-toxoplasmosis': 'toxoplasmosis',
-    'constitutional-mismatch-repair-deficiency': 'mismatch repair cancer children',
-    'fragile-x-syndrome': 'fragile x',
-    'gaucher-disease': 'gaucher',
-    'marfan-syndrome': 'marfan',
-    'cdkl5-deficiency-disorder': 'cdkl5',
-}
-
 # ── FETCH ACTIVE DISEASES ───────────────────────────
 def get_diseases():
-    response = supabase.table("diseases").select("id, name, slug").eq("active", True).execute()
+    response = supabase.table("diseases").select("id, name, slug, propublica_query").eq("active", True).execute()
     return response.data
 
 # ── SEARCH PROPUBLICA ────────────────────────────────
@@ -98,8 +87,7 @@ def main():
 
     for disease in diseases:
         name = disease["name"]
-        slug = disease.get("slug", "")
-        query = search_overrides.get(slug, name)
+        query = disease.get("propublica_query") or name
         orgs = search_nonprofits(query)
         print(f"--- {name} ---" + (f" (search: '{query}')" if query != name else ""))
 
