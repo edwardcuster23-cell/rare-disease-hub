@@ -8,6 +8,7 @@ from supabase import create_client
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+NCBI_API_KEY = os.getenv("NCBI_API_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
@@ -50,6 +51,8 @@ def search_pubmed(query):
         "mindate": "2023",
         "maxdate": "2026"
     }
+    if NCBI_API_KEY:
+        params["api_key"] = NCBI_API_KEY
     response = requests.get(url, params=params)
     response.raise_for_status()
     data = response.json()
@@ -69,9 +72,24 @@ def fetch_paper_details(pubmed_ids):
             "id": ",".join(batch),
             "retmode": "json"
         }
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        data = response.json()
+        if NCBI_API_KEY:
+            params["api_key"] = NCBI_API_KEY
+        data = None
+        for attempt in range(3):
+            try:
+                response = requests.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
+                break
+            except (requests.exceptions.ConnectionError, requests.exceptions.ChunkedEncodingError) as e:
+                if attempt < 2:
+                    print(f"    Connection error, retrying in 5s... ({e})")
+                    time.sleep(5)
+                else:
+                    print(f"    Failed after 3 attempts: {e}")
+                    continue
+        if data is None:
+            continue
         for pid in batch:
             if pid in data["result"]:
                 item = data["result"][pid]
